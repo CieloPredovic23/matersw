@@ -20,7 +20,12 @@
 		"e2e:run": "cypress run",
 		"e2e:api": "./_scripts/run_api.sh",
 		"e2e-ci": "concurrently -k -s first \"npm:e2e:api\" \"cypress run --record --key $CYPRESS_API_KEY --reporter cypress-multi-reporters --reporter-options configFile=reporter-config.js\"",
-		"e2e": "concurrently -k -s first \"npm:e2e:api\" \"npm:e2e:run\""
+		"e2e": "concurrently -k -s first \"npm:e2e:api\" \"npm:e2e:run\"",
+		"next:dev": "next dev -p 3387",
+		"next:build": "next build",
+		"next:start": "next start",
+		"next:lint": "next lint",
+		"next:export": "next build && next export"
 	},
 	"repository": {
 		"type": "git",
@@ -59,6 +64,7 @@
 		"launchdarkly-js-client-sdk": "^2.22.1",
 		"monaco-editor": ">=0.30.0",
 		"monaco-yaml": "^4.0.0",
+		"next": "^13.2.4",
 		"ng-showdown": "^1.1.0",
 		"prop-types": "^15.7.2",
 		"react": "^18.2.0",

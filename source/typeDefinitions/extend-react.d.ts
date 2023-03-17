@@ -1,7 +1,6 @@
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      "my-element": any;
-    }
+namespace JSX {
+  interface IntrinsicElements {
+    "r-yml-storage-settings": any;
+    "r-yml-editor-header": any;
   }
 }

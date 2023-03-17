@@ -165,6 +165,20 @@ module.exports = {
 				include: /node_modules\/@bitrise\/bitkit/
 			},
 
+			// {
+			// 	test: /\.tsx?$/,
+			// 	use: {
+			// 		loader: "ts-loader",
+			// 		options: {
+			// 			allowTsInNodeModules:true,
+			// 			compilerOptions: {
+			// 				sourceMap: !isProd
+			// 			}
+			// 		}
+			// 	},
+			// 	include: /node_modules\/@bitrise\/bitkit/
+			// },
+
 			{
 				test: /\.(slim)$/,
 				use: [htmlExporter, railsTransformer("slim")]
