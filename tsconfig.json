@@ -1,52 +1,27 @@
 {
-  "compilerOptions": {
-    "outDir": "build",
-    "module": "commonjs",
-    "target": "es5",
-    "lib": [
-      "dom",
-      "es2015",
-      "es2019"
-    ],
-    "sourceMap": true,
-    "allowJs": true,
-    "jsx": "preserve",
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedParameters": true,
-    "noUnusedLocals": true,
-    "skipLibCheck": true,
-    "noImplicitAny": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "strict": true,
-    "typeRoots": [
-      "source/typeDefinitions"
-    ],
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "incremental": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "types": ["node"]
-  },
-  "exclude": [
-    "node_modules",
-    "build",
-    "scripts"
-  ],
-  "include": [
-    "source/**/*.ts",
-    "source/**/*.tsx",
-    "pages/**/*.tsx"
-  ],
-  "lib": [
-    "dom",
-    "es2015",
-    "es2019"
-  ]
+	"compilerOptions": {
+		"outDir": "build",
+		"module": "commonjs",
+		"target": "es5",
+		"lib": ["dom", "es2015", "es2019"],
+		"sourceMap": true,
+		"allowJs": true,
+		"jsx": "react-jsx",
+		"moduleResolution": "node",
+		"experimentalDecorators": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noUnusedParameters": true,
+		"noUnusedLocals": true,
+		"skipLibCheck": true,
+		"noImplicitAny": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"strictNullChecks": true,
+		"suppressImplicitAnyIndexErrors": true,
+		"strict": true,
+	},
+	"exclude": ["node_modules", "build", "scripts"],
+	"include": ["source/**/*.ts", "source/**/*.tsx"],
+	"lib": ["dom", "es2015", "es2019"]
 }
