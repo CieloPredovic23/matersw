@@ -13,7 +13,8 @@ var ctxs = [
     require.context("./directives", true),
 
     // templates
-    require.context("../templates", true, /^[^_].*\.slim$/)
+    require.context("../templates", true, /^[^_].*\.slim$/),
+    require.context("../../pages", true, /.tsx$/)
 ];
 
 import "../index.slim";

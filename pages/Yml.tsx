@@ -9,7 +9,7 @@ export async function getStaticProps() {
 }
 
 const Yml = ({ data }: { data: string }) => {
-  console.log("hello logged");
+  console.log("hello logged2");
   console.log(data);
   return (
     <div className="tab-yml menu-content-padding" ng-controller="YMLController as ymlCtrl">

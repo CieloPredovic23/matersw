@@ -30,6 +30,14 @@ const railsTransformer = mode => ({
 	},
 });
 
+const nextTransformer = () => ({
+	loader: "shell-loader",
+	options: {
+		script: "echo 'hello'",
+	},
+});
+
+
 const htmlExporter = {
 	loader: "file-loader",
 	options: {
@@ -91,7 +99,13 @@ module.exports = {
 		static: {
 			directory: OUTPUT_FOLDER,
 			publicPath: publicPath,
-		}
+		},
+		proxy: {
+			"/1.3.203/templates/yml.html": {
+        target: "http://localhost:3387/",
+        pathRewrite: { "^/1.3.203/templates/yml.html": "" },
+      },
+    },
 	},
 
 	devtool: `${isProd ? "hidden-" : ""}source-map`,
@@ -148,7 +162,10 @@ module.exports = {
 						}
 					}
 				},
-				exclude: /node_modules/
+				exclude: [
+					/node_modules/,
+					/pages/
+				]
 			},
 
 			{
@@ -165,19 +182,11 @@ module.exports = {
 				include: /node_modules\/@bitrise\/bitkit/
 			},
 
-			// {
-			// 	test: /\.tsx?$/,
-			// 	use: {
-			// 		loader: "ts-loader",
-			// 		options: {
-			// 			allowTsInNodeModules:true,
-			// 			compilerOptions: {
-			// 				sourceMap: !isProd
-			// 			}
-			// 		}
-			// 	},
-			// 	include: /node_modules\/@bitrise\/bitkit/
-			// },
+			{
+				test: /\.tsx?$/,
+				use: nextTransformer(),
+				include: /pages/
+			},
 
 			{
 				test: /\.(slim)$/,
@@ -272,5 +281,8 @@ module.exports = {
 				{ from: "images/favicons/*", to: OUTPUT_FOLDER }
 			]
 		})
-	]
+	],
+	infrastructureLogging: {
+    debug: [name => name.includes("webpack-dev-server")],
+  },
 };
