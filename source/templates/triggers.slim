@@ -5,6 +5,7 @@
 		.type[ng-repeat="triggerType in triggerTypes" ng-init="id = 'trigger-type-filter-' + triggerType.id"]
 			input[type="radio" ng-model="triggersCtrl.triggerTypeSelected" ng-model-options="{getterSetter: true}" id="{{ id }}" ng-value="triggerType" tabindex="{{ triggerType == triggersCtrl.selectedTriggerType ? '-1' : '0' }}"]
 			label[for="{{ id }}" ng-bind="triggerType.id | displayNameForTriggerType"]
+	div helloka
 	ul.triggers
 		li
 			button.add-trigger.rebo.small.light-purple[ng-click="triggersCtrl.addTriggerSelectedAtIndex(0)" ng-disabled="triggersCtrl.selectedTrigger || !triggersCtrl.targets.length"] == data[:strings][:triggers][:add]

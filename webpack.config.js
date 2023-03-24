@@ -30,18 +30,42 @@ const railsTransformer = mode => ({
 	},
 });
 
+// const nextTransformer = () => ({
+// 	loader: "shell-loader",
+// 	options: {
+// 		// script: "echo 'hello'",
+// 		script: "curl http://localhost:3387/yml"
+// 	},
+// });
+
 const nextTransformer = () => ({
 	loader: "shell-loader",
 	options: {
-		script: "echo 'hello'",
+		cwd: "./_scripts",
+		script: "node webpack_next_js_loader_script.js"
 	},
 });
-
 
 const htmlExporter = {
 	loader: "file-loader",
 	options: {
 		name: "[path][name].html"
+	}
+};
+
+const htmlExporter2 = {
+	loader: "file-loader",
+	options: {
+		// name: "[path][name].html"
+		name(resourcePath, resourceQuery) {
+			// `resourcePath` - `/absolute/path/to/file.js`
+			// `resourceQuery` - `?foo=bar`
+
+			console.log("html exporter for: " + resourcePath);
+			console.log("html exporter for resourceQuery: " + resourceQuery);
+
+			return "/templates/[name].html";
+		},
 	}
 };
 
@@ -100,12 +124,12 @@ module.exports = {
 			directory: OUTPUT_FOLDER,
 			publicPath: publicPath,
 		},
-		proxy: {
-			"/1.3.203/templates/yml.html": {
-        target: "http://localhost:3387/",
-        pathRewrite: { "^/1.3.203/templates/yml.html": "" },
-      },
-    },
+		// proxy: {
+		// 	"/1.3.203/templates/yml.html": {
+    //     target: "http://localhost:3387/",
+    //     pathRewrite: { "^/1.3.203/templates/yml.html": "" },
+    //   },
+    // },
 	},
 
 	devtool: `${isProd ? "hidden-" : ""}source-map`,
@@ -184,7 +208,7 @@ module.exports = {
 
 			{
 				test: /\.tsx?$/,
-				use: nextTransformer(),
+				use: [htmlExporter2, nextTransformer()],
 				include: /pages/
 			},
 
