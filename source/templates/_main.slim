@@ -35,7 +35,7 @@ header.sticky
 						span Workflow Editor
 			.workflow-editor-menubar[ng-if="mainCtrl.shouldShowMenuBar()"]
 				nav[id="menu-nav"]
-					button.tab[ng-repeat="menu in mainCtrl.menus" ng-click="mainCtrl.menuClicked(menu)" class="{{ menu.cssClass }}" ng-class="{'current': menu == mainCtrl.currentMenu}" ng-disabled="!mainCtrl.isMenuEnabled(menu)" tabindex="{{ menu == mainCtrl.currentMenu ? '-1' : '0' }}" data-e2e-tag="{{ menu.cssClass }}-tab" id="{{ menu.id }}"]
+					button.tab[ng-repeat="menu in mainCtrl.menus" ng-click="mainCtrl.menuSelected(menu)" class="{{ menu.cssClass }}" ng-class="{'current': menu == mainCtrl.currentMenu}" ng-disabled="!mainCtrl.isMenuEnabled(menu)" tabindex="{{ menu == mainCtrl.currentMenu ? '-1' : '0' }}" data-e2e-tag="{{ menu.cssClass }}-tab" id="{{ menu.id }}"]
 						span.icon[ng-if="menu.cssClass == 'workflows'"]  == svg("main/menuicon-workflows")
 						span.icon[ng-if="menu.cssClass == 'code-signing'"]  == svg("main/menuicon-code_signing")
 						span.icon[ng-if="menu.cssClass == 'secrets'"]  == svg("main/menuicon-secrets")

@@ -30,14 +30,6 @@ const railsTransformer = mode => ({
 	},
 });
 
-// const nextTransformer = () => ({
-// 	loader: "shell-loader",
-// 	options: {
-// 		// script: "echo 'hello'",
-// 		script: "curl http://localhost:3387/yml"
-// 	},
-// });
-
 const nextTransformer = () => ({
 	loader: "shell-loader",
 	options: {
@@ -53,7 +45,7 @@ const htmlExporter = {
 	}
 };
 
-const htmlExporter2 = {
+const nextHtmlExporter = {
 	loader: "file-loader",
 	options: {
 		// name: "[path][name].html"
@@ -208,7 +200,7 @@ module.exports = {
 
 			{
 				test: /\.tsx?$/,
-				use: [htmlExporter2, nextTransformer()],
+				use: [nextHtmlExporter, nextTransformer()],
 				include: /pages/
 			},
 
