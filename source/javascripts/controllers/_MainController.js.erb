@@ -224,10 +224,6 @@ import datadogRumCustomTiming from "../utils/datadogCustomRumTiming.ts";
 				);
 			}
 
-			viewModel.menuClicked = function(menu) {
-				window.location.href = window.location.pathname + '/#!/' + menu.path;
-			}
-
 			viewModel.menuSelected = function(menu) {
 				if (menu === viewModel.currentMenu) {
 					return;
