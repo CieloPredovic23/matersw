@@ -20,8 +20,6 @@ const isDataDogRumEnabled = DATADOG_RUM === "true";
 const isSegmentEnabled = SEGMENT === "true";
 const publicPath = `${urlPrefix}/${version}/`;
 
-debugger;
-
 const railsTransformer = mode => ({
 	loader: "shell-loader",
 	options: {
