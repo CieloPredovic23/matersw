@@ -11,8 +11,10 @@ export async function getStaticProps() {
 const Yml = ({ data }: { data: string }) => {
   return (
     <div className="tab-yml menu-content-padding" ng-controller="YMLController as ymlCtrl">
+      <div>hello</div>
       <section className="cardo warn" ng-if="appService.validationWarnings.length!=0">
         <div className="icon">
+          change 7
         </div>
           <div className="message4">
           <div className="title">{data}</div>

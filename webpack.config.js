@@ -20,6 +20,8 @@ const isDataDogRumEnabled = DATADOG_RUM === "true";
 const isSegmentEnabled = SEGMENT === "true";
 const publicPath = `${urlPrefix}/${version}/`;
 
+debugger;
+
 const railsTransformer = mode => ({
 	loader: "shell-loader",
 	options: {
@@ -29,6 +31,8 @@ const railsTransformer = mode => ({
 		env: { ...process.env, wfe_version: version }
 	},
 });
+
+var a = 2;
 
 const nextTransformer = () => ({
 	loader: "shell-loader",
@@ -200,7 +204,15 @@ module.exports = {
 
 			{
 				test: /\.tsx?$/,
-				use: [nextHtmlExporter, nextTransformer()],
+				use: [nextHtmlExporter, 
+					{
+						loader: path.resolve("_scripts/next_loader.js"),
+						options: {
+							cwd: "./_scripts",
+							script: "node webpack_next_js_loader_script.js"
+						},
+					}
+				],
 				include: /pages/
 			},
 
