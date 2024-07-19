@@ -1,6 +1,6 @@
 import { delay, http, HttpResponse } from 'msw';
-import { GET_ALL_STACK_INFO_PATH } from './services/getAllStackInfo';
-import { GET_MACHINE_TYPE_CONFIGS_PATH } from './services/getMachineTypeConfigs';
+import { GET_ALL_STACK_INFO_PATH } from './services/stackService';
+import { GET_MACHINE_TYPE_CONFIGS_PATH } from './services/machineTypeService';
 
 export const mockGetAllStackInfo = () => {
   return http.get(GET_ALL_STACK_INFO_PATH, async () => {

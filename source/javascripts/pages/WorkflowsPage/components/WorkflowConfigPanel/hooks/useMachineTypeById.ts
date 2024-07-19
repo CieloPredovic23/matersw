@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import useMachineTypeOptions from './useMachineTypeOptions';
+import { useMemo } from "react";
+import useMachineTypeOptions from "./useMachineTypeOptions";
 
 type Props = {
   appSlug: string;
@@ -8,7 +8,12 @@ type Props = {
   canChangeMachineType: boolean;
 };
 
-const useMachineTypeById = ({ appSlug, stackId, machineTypeId, canChangeMachineType }: Props) => {
+const useMachineTypeById = ({
+  appSlug,
+  stackId,
+  machineTypeId,
+  canChangeMachineType,
+}: Props) => {
   const { isLoading, machineTypeOptions } = useMachineTypeOptions({
     appSlug,
     stackId,
@@ -17,7 +22,9 @@ const useMachineTypeById = ({ appSlug, stackId, machineTypeId, canChangeMachineT
   return useMemo(
     () => ({
       isLoading,
-      machineType: machineTypeOptions.find((machineType) => machineType.value === machineTypeId),
+      machineType: machineTypeOptions.find(
+        (machineType) => machineType.value === machineTypeId,
+      ),
     }),
     [isLoading, machineTypeOptions, machineTypeId],
   );

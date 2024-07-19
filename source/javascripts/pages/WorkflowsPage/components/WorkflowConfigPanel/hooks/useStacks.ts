@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllStackInfoQueryOptions } from '../services/getAllStackInfo';
+import { getAllStackInfoQueryOptions } from '../services/stackService';
 
 type Props = {
   appSlug: string;

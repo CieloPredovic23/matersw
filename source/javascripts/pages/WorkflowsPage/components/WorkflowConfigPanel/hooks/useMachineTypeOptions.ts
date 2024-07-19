@@ -1,30 +1,7 @@
 import { useMemo } from 'react';
-import { MachineTypeConfigs } from '../services/getMachineTypeConfigs';
 import useStacks from './useStacks';
 import useMachineTypes from './useMachineTypes';
 
-type MachineType = MachineTypeConfigs['available_machine_type_configs'][string]['machine_types'][string];
-type MachineTypeWithKey = Partial<MachineType> & { key: string };
-
-const findMachineTypeByKey = (machineTypeKey: string, machineTypeConfigs?: MachineTypeConfigs) => {
-  let result: MachineType | undefined;
-
-  Object.values(machineTypeConfigs?.available_machine_type_configs ?? {}).forEach(({ machine_types }) => {
-    result ??= machine_types[machineTypeKey];
-  });
-
-  return result;
-};
-
-const buildMachineTypeLabel = (machineType: MachineTypeWithKey) => {
-  if (!machineType?.name) {
-    return machineType.key;
-  }
-
-  const { name, cpu_count: cpuCount, cpu_description: cpuDescription, credit_per_min: creditPerMin, ram } = machineType;
-
-  return `${name} ${cpuCount} @ ${cpuDescription} ${ram} (${creditPerMin} credits/min)`;
-};
 type Props = {
   appSlug: string;
   stackId: string;

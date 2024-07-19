@@ -1,5 +1,4 @@
 import { UseQueryOptions } from '@tanstack/react-query';
-import getCookie from '@/hooks/utils/cookies';
 
 export type AllStackInfo = {
   available_stacks: {
@@ -23,21 +22,15 @@ export const getAllStackInfoPath = (appSlug: string) => GET_ALL_STACK_INFO_PATH.
 export const getAllStackInfoQueryOptions = (appSlug: string): UseQueryOptions<AllStackInfo, Error, AllStackInfo> => ({
   staleTime: Infinity,
   queryKey: [getAllStackInfoPath(appSlug)],
-  queryFn: ({ signal }) => getAllStackInfo(appSlug, signal),
+  queryFn: ({ signal }) => stack(appSlug, signal),
 });
 
 // TODO: Create a general fetch service
-const getAllStackInfo = async (appSlug: string, signal?: AbortSignal) => {
-  const response = await fetch(getAllStackInfoPath(appSlug), {
+const stack = async (appSlug: string, signal?: AbortSignal) => {
+  const response = await monolithApi(getAllStackInfoPath(appSlug), {
     signal,
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': getCookie('CSRF-TOKEN'),
-    },
   });
-
   return (await response.json()) as AllStackInfo;
 };
 
-export default getAllStackInfo;
+export default stack;
