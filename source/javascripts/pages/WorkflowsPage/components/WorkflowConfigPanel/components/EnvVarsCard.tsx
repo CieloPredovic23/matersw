@@ -7,7 +7,7 @@ import { restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifi
 import { CSS } from '@dnd-kit/utilities';
 import { FormValues } from '../WorkflowConfigPanel.types';
 import AutoGrowableInput from './AutoGrowableInput';
-import { isKeyUnique, isNotEmpty, KEY_IS_REQUIRED, KEY_PATTERN, VALUE_IS_REQUIRED } from '@/models/EnvVar';
+import { isKeyUnique, isNotEmpty, KEY_IS_REQUIRED, KEY_PATTERN, VALUE_IS_REQUIRED } from '@/core/domain/EnvVar';
 
 const ButtonContent = () => {
   const {

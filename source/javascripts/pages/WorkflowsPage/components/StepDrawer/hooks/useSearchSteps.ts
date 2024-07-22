@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import useAlgoliaSteps from '../../../hooks/useAlgoliaSteps';
 import { fromAlgolia } from '../StepDrawer.utils';
 import { SearchFormValues, Step } from '../StepDrawer.types';
-import { AlgoliaStepResponse } from '@/models/Algolia';
+import { AlgoliaStepResponse } from '@/core/domain/Algolia';
 
 const ATTRIBUTES_TO_RETRIEVE = [
   'id',

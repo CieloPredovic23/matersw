@@ -1,6 +1,6 @@
 import { Box, Button, Text } from '@bitrise/bitkit';
 
-import WorkflowRecipesLink from '../workflow-recipes/WorkflowRecipesLink/WorkflowRecipesLink';
+import WorkflowRecipesLink from '@/components/WorkflowRecipesLink/WorkflowRecipesLink';
 
 type YmlEditorHeaderProps = {
   url: string;

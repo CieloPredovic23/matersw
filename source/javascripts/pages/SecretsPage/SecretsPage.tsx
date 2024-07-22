@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Box, Button, Dialog, DialogBody, DialogFooter, EmptyState, Link, Notification, Text } from '@bitrise/bitkit';
-import { useMutation } from '@tanstack/react-query';
 import SecretCard from './SecretCard';
 import { Secret, SecretWithState } from '@/models';
-import { monolith } from '@/hooks/api/client';
+import { useDeleteSecret } from '@/hooks/api/useSecrets';
 
 type SecretsPageProps = {
   secrets: Secret[];
@@ -32,13 +31,7 @@ const SecretsPage = (props: SecretsPageProps) => {
     isError: deleteError,
     isPending: deleteLoading,
     reset: resetDelete,
-  } = useMutation({
-    mutationFn: (key: string) => monolith.delete(`/apps/${appSlug}/secrets/${key}`),
-    onSuccess(_resp, key) {
-      resetDelete();
-      afterDelete(key);
-    },
-  });
+  } = useDeleteSecret({ appSlug, secretKey: deleteId || '' });
 
   const workspaceSecretList = secrets
     .filter((secret) => secret.isShared)
@@ -66,11 +59,16 @@ const SecretsPage = (props: SecretsPageProps) => {
     setAppSecretList(newSecretList);
   };
 
-  const handleDelete = (id: string | null) => {
-    if (id && secretsWriteNew) {
-      deleteSecret(id);
+  const handleDelete = () => {
+    if (deleteId && secretsWriteNew) {
+      deleteSecret(null as never, {
+        onSuccess: () => {
+          afterDelete(deleteId);
+          resetDelete();
+        },
+      });
     } else {
-      afterDelete(id);
+      afterDelete(deleteId);
     }
   };
 
@@ -222,7 +220,7 @@ const SecretsPage = (props: SecretsPageProps) => {
           <Button variant="secondary" onClick={() => setDeleteId(null)}>
             Cancel
           </Button>
-          <Button isLoading={deleteLoading} isDanger onClick={() => handleDelete(deleteId)}>
+          <Button isLoading={deleteLoading} isDanger onClick={() => handleDelete()}>
             Delete secret
           </Button>
         </DialogFooter>

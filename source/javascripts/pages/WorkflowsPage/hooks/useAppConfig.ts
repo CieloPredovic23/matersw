@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-
-const queryKey = (appSlug: string) => ['app', appSlug, 'config'];
+import { BitriseYml } from '@/core/domain/BitriseYml';
 
 const getAppConfig = (appSlug: string) => async () => {
   const response = await fetch(`/api/app/${appSlug}/config`);
@@ -12,9 +11,10 @@ type Props = {
 };
 
 const useAppConfig = ({ appSlug }: Props) => {
-  return useQuery({
-    queryKey: queryKey(appSlug),
+  return useQuery<BitriseYml>({
+    queryKey: ['app', appSlug, 'config'],
     queryFn: getAppConfig(appSlug),
+    staleTime: Infinity,
   });
 };
 

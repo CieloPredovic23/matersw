@@ -15,7 +15,7 @@ import FilterInput from '../FilterInput/FilterInput';
 import { HandlerFn } from './types';
 import LoadingState from './components/LoadingState';
 import CreateSecret from './components/CreateSecret';
-import { Secret } from '@/models/Secret';
+import { Secret } from '@/core/domain/Secret';
 
 type Props = {
   size: 'sm' | 'md';

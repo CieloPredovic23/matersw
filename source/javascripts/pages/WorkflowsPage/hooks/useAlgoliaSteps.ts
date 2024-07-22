@@ -1,28 +1,14 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import uniqBy from 'lodash/uniqBy';
-import { AlgoliaStepResponse } from '../../../models/Algolia';
-import useAlgolia from './useAlgolia';
+import { AlgoliaStepDTO, AttributesToRetrieve, getAllSteps } from '@/core/api/algoliaApi';
 
 type Props = {
-  attributesToRetrieve: Array<string>;
+  attributesToRetrieve: AttributesToRetrieve;
 };
 
-const useAlgoliaSteps = ({ attributesToRetrieve = ['*'] }: Props): UseQueryResult<AlgoliaStepResponse[]> => {
-  const { algoliaStepsClient } = useAlgolia();
-
-  return useQuery<AlgoliaStepResponse[]>({
+const useAlgoliaSteps = ({ attributesToRetrieve = ['*'] }: Props): UseQueryResult<AlgoliaStepDTO[]> => {
+  return useQuery<AlgoliaStepDTO[]>({
     queryKey: ['algolia', 'steps', attributesToRetrieve],
-    queryFn: async (): Promise<AlgoliaStepResponse[]> => {
-      const results: Array<AlgoliaStepResponse> = [];
-      const attrs = attributesToRetrieve.includes('*') ? ['*'] : ['id', ...attributesToRetrieve];
-      await algoliaStepsClient.browseObjects<AlgoliaStepResponse>({
-        batch: (objects) => results.push(...objects),
-        attributesToRetrieve: attrs,
-        filters: 'is_latest:true AND is_deprecated:false',
-      });
-      return uniqBy(results, 'id');
-    },
-    enabled: !!algoliaStepsClient,
+    queryFn: () => getAllSteps({ attributesToRetrieve }),
     staleTime: Infinity,
   });
 };

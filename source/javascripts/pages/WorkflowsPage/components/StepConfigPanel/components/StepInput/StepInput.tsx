@@ -9,8 +9,8 @@ import { useEnvironmentVariables } from '../InsertEnvVarPopover/EnvVarProvider';
 import { useSecrets } from '../InsertSecretPopover/SecretsProvider';
 import InsertSecretPopover from '../InsertSecretPopover/InsertSecretPopover';
 import StepInputLabel from './StepInputLabel';
-import { Secret } from '@/models/Secret';
-import { EnvVar } from '@/models/EnvVar';
+import { Secret } from '@/core/domain/Secret';
+import { EnvVar } from '@/core/domain/EnvVar';
 
 type CommonProps = {
   name: string;

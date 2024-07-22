@@ -5,10 +5,10 @@ import Notification from "./components/Notification";
 import InfoTooltip from "./components/InfoTooltip";
 import Toggle from "./components/Toggle";
 import NotificationMessageWithLink from "./components/NotificationMessageWithLink";
-import StepItem from "./components/StepItem/StepItem";
-import StepBadge from "./components/StepBadge/StepBadge";
-import YmlStorageSettings from "./components/YmlStorageSettings/YmlStorageSettings";
-import UpdateYmlInRepositoryModal from "./components/UpdateYmlInRepositoryModal/UpdateYmlInRepositoryModal";
+import StepItem from "@/components/StepItem/StepItem";
+import StepBadge from "@/components/StepBadge/StepBadge";
+import YmlStorageSettings from "@/components/YmlStorageSettings/YmlStorageSettings";
+import UpdateYmlInRepositoryModal from "@/components/UpdateYmlInRepositoryModal/UpdateYmlInRepositoryModal";
 import {
   ChainWorkflowDrawer,
   CreateWorkflowDialog,
@@ -21,9 +21,9 @@ import {
   WorkflowSelector,
   WorkflowToolbar,
 } from "@/pages/WorkflowsPage";
-import YmlEditorHeader from "./components/YmlEditorHeader/YmlEditorHeader";
+import YmlEditorHeader from "@/components/YmlEditorHeader/YmlEditorHeader";
 
-import WorkflowRecipesInfoBanner from "./components/workflow-recipes/WorkflowRecipesInfoBanner/WorkflowRecipesInfoBanner";
+import WorkflowRecipesInfoBanner from "@/components/WorkflowRecipesInfoBanner/WorkflowRecipesInfoBanner";
 import { RootComponent, withRootProvider } from "./utils/withRootProvider";
 import Header from "./components/Header";
 import Navigation from "./components/Navigation";

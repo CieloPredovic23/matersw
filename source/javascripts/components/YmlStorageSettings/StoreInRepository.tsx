@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Box, Button, ButtonGroup, Notification } from '@bitrise/bitkit';
 
-import useGetAppConfigCallback from '../../hooks/api/useGetAppConfigCallback';
-import useGetAppConfigFromRepoCallback from '../../hooks/api/useGetAppConfigFromRepoCallback';
-import useUpdatePipelineConfigCallback from '../../hooks/api/useUpdatePipelineConfigCallback';
-import { WFEWindow } from '../../typings/global';
-import LookingForYmlInRepoProgress from '../common/notifications/LookingForYmlInRepoProgress';
-import ValidatingYmlInRepoProgress from '../common/notifications/ValidatingYmlInRepoProgress';
-import YmlInRepositoryInvalidError from '../common/notifications/YmlInRepositoryInvalidError';
-import YmlNotFoundInRepositoryError from '../common/notifications/YmlNotFoundInRepositoryError';
-import RepoYmlStorageActions from '../common/RepoYmlStorageActions';
+import { WFEWindow } from '../../../typings/global';
+import LookingForYmlInRepoProgress from '../../../components/common/notifications/LookingForYmlInRepoProgress';
+import ValidatingYmlInRepoProgress from '../../../components/common/notifications/ValidatingYmlInRepoProgress';
+import YmlInRepositoryInvalidError from '../../../components/common/notifications/YmlInRepositoryInvalidError';
+import YmlNotFoundInRepositoryError from '../../../components/common/notifications/YmlNotFoundInRepositoryError';
+import RepoYmlStorageActions from '../../../components/common/RepoYmlStorageActions';
 import ConfirmSwitchToRepositoryYml from './ConfirmSwitchToRepositoryYml';
 import StoreInRepositoryDescription from './StoreInRepositoryDescription';
+import useUpdatePipelineConfigCallback from '@/hooks/api/useUpdatePipelineConfigCallback';
+import useGetAppConfigFromRepoCallback from '@/hooks/api/useGetAppConfigFromRepoCallback';
+import useGetAppConfigCallback from '@/hooks/api/useGetAppConfigCallback';
 
 type StorageInRepositoryProps = {
   appSlug: string;

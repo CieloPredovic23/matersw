@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { Box, Button, ButtonGroup, Checkbox, Input, Text } from '@bitrise/bitkit';
 import { CreateEnvVarFormValues, HandlerFn } from '../types';
-import { EnvVar, isKeyUnique, isNotEmpty, KEY_IS_REQUIRED, KEY_PATTERN, VALUE_IS_REQUIRED } from '@/models/EnvVar';
+import { EnvVar, isKeyUnique, isNotEmpty, KEY_IS_REQUIRED, KEY_PATTERN, VALUE_IS_REQUIRED } from '@/core/domain/EnvVar';
 
 type Props = {
   items: EnvVar[];

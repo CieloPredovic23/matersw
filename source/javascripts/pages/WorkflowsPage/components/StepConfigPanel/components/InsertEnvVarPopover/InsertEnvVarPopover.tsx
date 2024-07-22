@@ -15,7 +15,7 @@ import FilterInput from '../FilterInput/FilterInput';
 import { HandlerFn } from './types';
 import CreateEnvVar from './components/CreateEnvVar';
 import LoadingState from './components/LoadingState';
-import { EnvVar } from '@/models/EnvVar';
+import { EnvVar } from '@/core/domain/EnvVar';
 
 type Props = {
   size: 'sm' | 'md';

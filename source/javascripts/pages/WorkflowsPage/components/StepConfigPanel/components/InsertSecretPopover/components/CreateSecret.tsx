@@ -2,7 +2,7 @@ import { Box, Button, ButtonGroup, Checkbox, Input, Text } from '@bitrise/bitkit
 
 import { useForm } from 'react-hook-form';
 import { CreateSecretFormValues, HandlerFn } from '../types';
-import { isKeyUnique, isNotEmpty, KEY_IS_REQUIRED, KEY_PATTERN, Secret, VALUE_IS_REQUIRED } from '@/models/Secret';
+import { isKeyUnique, isNotEmpty, KEY_IS_REQUIRED, KEY_PATTERN, Secret, VALUE_IS_REQUIRED } from '@/core/domain/Secret';
 
 type Props = {
   items: Secret[];

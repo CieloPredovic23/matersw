@@ -1,12 +1,12 @@
 import { ReactElement, useEffect } from 'react';
 import { Box, Button, ButtonGroup, Dialog, DialogBody, DialogFooter, Notification, Text } from '@bitrise/bitkit';
 
-import useGetAppConfigFromRepoCallback from '../../hooks/api/useGetAppConfigFromRepoCallback';
 import { AppConfig } from '../../models/AppConfig';
-import LookingForYmlInRepoProgress from '../common/notifications/LookingForYmlInRepoProgress';
-import YmlInRepositoryInvalidError from '../common/notifications/YmlInRepositoryInvalidError';
-import YmlNotFoundInRepositoryError from '../common/notifications/YmlNotFoundInRepositoryError';
-import RepoYmlStorageActions from '../common/RepoYmlStorageActions';
+import LookingForYmlInRepoProgress from '../../../components/common/notifications/LookingForYmlInRepoProgress';
+import YmlInRepositoryInvalidError from '../../../components/common/notifications/YmlInRepositoryInvalidError';
+import YmlNotFoundInRepositoryError from '../../../components/common/notifications/YmlNotFoundInRepositoryError';
+import RepoYmlStorageActions from '../../../components/common/RepoYmlStorageActions';
+import useGetAppConfigFromRepoCallback from '@/hooks/api/useGetAppConfigFromRepoCallback';
 
 type Props = {
   appSlug: string;

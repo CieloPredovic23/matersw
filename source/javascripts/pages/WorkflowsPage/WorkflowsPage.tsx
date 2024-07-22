@@ -1,6 +1,6 @@
 import { Box } from '@bitrise/bitkit';
 import { BitriseYml } from '@/models/BitriseYml';
-import { Workflows } from '@/models/Workflow';
+import { Workflows } from '@/core/domain/Workflow';
 
 type Props = {
   yml: BitriseYml;

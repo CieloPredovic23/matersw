@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import useWorkflows from './useWorkflows';
+import useWorkflows from '../../../hooks/useWorkflows';
 
 const useWorkflowNames = () => {
   const workflows = useWorkflows();

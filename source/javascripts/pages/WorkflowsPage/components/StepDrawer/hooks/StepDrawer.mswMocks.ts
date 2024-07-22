@@ -1,5 +1,5 @@
 import { delay, http, HttpResponse } from 'msw';
-import { AlgoliaStepResponse, Maintainer } from '@/models/Algolia';
+import { AlgoliaStepResponse, Maintainer } from '@/core/domain/Algolia';
 
 export const MockSteps: AlgoliaStepResponse[] = [
   {

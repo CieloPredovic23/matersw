@@ -1,4 +1,4 @@
-import { PipelineConfig } from '../../models/PipelineConfig';
+import { PipelineConfig } from '../../../models/PipelineConfig';
 import useMonolithApiCallback, { MonolithError } from './useMonolithApiCallback';
 
 export interface FetchResponse {

@@ -33,13 +33,13 @@ import {
 } from '@dnd-kit/sortable';
 import { restrictToParentElement, restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
 
-import useGetUserMetaData from '../../hooks/api/useGetUserMetaData';
-import usePutUserMetaData from '../../hooks/api/usePutUserMetaData';
 import AddPrTriggerDialog from './AddPrTriggerDialog';
 import AddPushTriggerDialog from './AddPushTriggerDialog';
 import AddTagTriggerDialog from './AddTagTriggerDialog';
 import TriggerCard from './TriggerCard';
 import { ConditionType, SourceType, TriggerItem } from './TriggersPage.types';
+import usePutUserMetaData from '@/hooks/api/usePutUserMetaData';
+import useGetUserMetaData from '@/hooks/api/useGetUserMetaData';
 
 type FinalTriggerItem = Record<string, boolean | string | { regex: string }>;
 

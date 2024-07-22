@@ -1,7 +1,8 @@
 import { Badge, Box, ExpandableCard, Select, Text } from '@bitrise/bitkit';
 import { useFormContext } from 'react-hook-form';
 import { FormValues } from '../WorkflowConfigPanel.types';
-import useStackAndMachine from '../hooks/useStackAndMachine';
+import useMachineTypeSelector from '../hooks/useMachineTypeSelector';
+import useStackSelector from '../hooks/useStackSelector';
 
 type ButtonContentProps = {
   stackName?: string;
@@ -45,61 +46,67 @@ const StackAndMachineCard = () => {
     'isMachineTypeSelectorAvailable',
   ]);
 
-  const { isLoading, stack, defaultStack, stackOptions, machineType, defaultMachineType, machineTypeOptions } =
-    useStackAndMachine({
-      appSlug,
-      selectedStackId,
-      defaultStackId,
-      selectedMachineTypeId,
-      defaultMachineTypeId,
-      canChangeMachineType: isMachineTypeSelectorAvailable,
-    });
+  const {
+    isLoading: isStacksLoading,
+    defaultStack,
+    selectedStack,
+    stackOptions,
+    enabledMachineIds,
+  } = useStackSelector({
+    appSlug,
+    defaultStackId,
+    selectedStackId,
+  });
 
-  const isDedicatedMachine = !isMachineTypeSelectorAvailable;
-  const isSelfHostedRunner = !defaultMachineTypeId;
-  const isMachineTypeSelectorDisabled = isDedicatedMachine || isSelfHostedRunner;
+  const {
+    isLoading: isMachinesLoading,
+    isDisabled: isMachineSelectorDisabled,
+    defaultMachine,
+    selectedMachine,
+    isDedicatedMachine,
+    isSelfHostedRunner,
+    machineTypeOptions,
+  } = useMachineTypeSelector({
+    appSlug,
+    enabledMachineIds,
+    defaultMachineTypeId,
+    selectedMachineTypeId,
+    isMachineTypeSelectorAvailable,
+  });
+
   const isDefault = !selectedStackId && !selectedMachineTypeId;
 
   if (!appSlug) {
     return null;
   }
 
-  if (isLoading) {
-    return (
-      <ExpandableCard
-        buttonContent={
-          <ButtonContent stackName={stack?.title} machineTypeName={machineType?.name} isDefault={isDefault} />
-        }
-      />
-    );
-  }
-
   return (
     <ExpandableCard
       buttonContent={
-        <ButtonContent stackName={stack?.title} machineTypeName={machineType?.name} isDefault={isDefault} />
+        <ButtonContent stackName={selectedStack?.name} machineTypeName={selectedMachine?.name} isDefault={isDefault} />
       }
     >
       <Box display="flex" flexDir="column" gap="24">
-        <Select label="Stack" {...register('configuration.stackId')} isRequired>
-          <option value="">Default ({defaultStack?.title})</option>
-          {stackOptions.map(({ value, title }) => (
+        <Select label="Stack" isRequired isLoading={isStacksLoading} {...register('configuration.stackId')}>
+          <option value="">Default ({defaultStack?.name})</option>
+          {stackOptions.map(({ value, name }) => (
             <option key={value} value={value}>
-              {title}
+              {name}
             </option>
           ))}
         </Select>
         <Select
           isRequired
           label="Machine type"
-          isDisabled={isMachineTypeSelectorDisabled}
+          isLoading={isMachinesLoading}
+          isDisabled={isMachineSelectorDisabled}
           {...register('configuration.machineTypeId')}
         >
           {isDedicatedMachine && <option value="">Dedicated Machine</option>}
           {isSelfHostedRunner && <option value="">Self-hosted Runner</option>}
           {!isDedicatedMachine && !isSelfHostedRunner && (
             <>
-              <option value="">Default ({defaultMachineType?.name})</option>
+              <option value="">Default ({defaultMachine?.name})</option>
               {machineTypeOptions.map(({ value, title }) => (
                 <option key={value} value={value}>
                   {title}

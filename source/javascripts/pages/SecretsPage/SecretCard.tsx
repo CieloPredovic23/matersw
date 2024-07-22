@@ -21,11 +21,9 @@ import {
 } from '@bitrise/bitkit';
 
 import { useForm } from 'react-hook-form';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { queryClient } from '../../utils/withQueryClientProvider';
-import { monolith } from '../../hooks/api/client';
-import useGetSecretValue from '../../hooks/api/useGetSecretValue';
-import { SecretWithState } from '../../models';
+import { useQueryClient } from '@tanstack/react-query';
+import { useSecretValue, useUpsertSecret } from '@/hooks/api/useSecrets';
+import { SecretWithState } from '@/core/domain/Secret';
 
 interface SecretCardProps extends CardProps {
   appSlug: string;
@@ -45,52 +43,39 @@ const SecretCard = (props: SecretCardProps) => {
   const [isShown, setIsShown] = useState(false);
   const [confirmCallback, setConfirmCallback] = useState<() => void | undefined>();
 
+  const queryClient = useQueryClient();
   const {
-    call: fetchSecretValue,
-    value: fetchedSecretValueOld,
     isLoading: isSecretValueLoadingOld,
-  } = useGetSecretValue(appSlug, secret.key);
-  const { data: fetchedSecret, isFetching: isSecretValueLoadingNew } = useQuery<{ value: string }>({
-    queryKey: ['app', appSlug, 'secret', secret.key],
-    async queryFn() {
-      const resp = await monolith.get<{ value: string }>(`/apps/${appSlug}/secrets/${secret.key}`);
-      return resp.data;
-    },
+    data: fetchedSecretOld,
+    refetch: fetchSecretValue,
+  } = useSecretValue({ appSlug, secretKey: secret.key });
+  const { data: fetchedSecret, isFetching: isSecretValueLoadingNew } = useSecretValue({
+    appSlug,
+    secretKey: secret.key,
     enabled: isShown && writeSecrets,
-    placeholderData: (prev) => prev,
-    staleTime: Infinity,
   });
-  const fetchedSecretValue = fetchedSecretValueOld || fetchedSecret?.value;
+  const fetchedSecretValue = fetchedSecretOld?.value || fetchedSecret?.value;
   const isSecretValueLoading = isSecretValueLoadingOld || isSecretValueLoadingNew;
   const {
     mutate: saveSecret,
     isError: saveError,
     isPending: saveLoading,
     reset: resetSave,
-  } = useMutation<unknown, unknown, SecretWithState>({
-    mutationFn: (newSecret) => {
-      const body = {
-        name: newSecret.key,
-        value: newSecret.value,
-        expandInStepInputs: newSecret.isExpand,
-        exposedForPullRequests: newSecret.isExpose,
-        isProtected: newSecret.isProtected,
-      };
-      if (newSecret.isSaved) {
-        return monolith.patch(`/apps/${appSlug}/secrets/${newSecret.key}`, body);
-      }
-      return monolith.post(`/apps/${appSlug}/secrets`, body);
-    },
-    onSuccess(_data, newSecret) {
+  } = useUpsertSecret({
+    appSlug,
+    secretKey: secret.key,
+    onSuccess(_data, { secret: newSecret }) {
       resetSave();
       onSave(newSecret);
-      queryClient.invalidateQueries({ queryKey: ['app', appSlug, 'secret', secret.key] });
+      queryClient.invalidateQueries({
+        queryKey: ['app', appSlug, 'secret', secret.key],
+      });
     },
   });
 
   const handleSave = (value: SecretWithState) => {
     if (writeSecrets) {
-      saveSecret(value);
+      saveSecret({ secret: value });
     } else {
       onSave(value);
     }
@@ -103,7 +88,10 @@ const SecretCard = (props: SecretCardProps) => {
     setValue,
     formState: { errors },
   } = useForm<SecretWithState>({
-    values: { ...secret, value: secret.isEditing || isShown ? fetchedSecretValue || secret.value : '••••••••' },
+    values: {
+      ...secret,
+      value: secret.isEditing || isShown ? fetchedSecretValue || secret.value : '••••••••',
+    },
   });
 
   const showSecretValue = () => {
@@ -173,7 +161,15 @@ const SecretCard = (props: SecretCardProps) => {
     if (secret.isEditing) {
       return (
         <Textarea
-          sx={{ '& textarea': { minHeight: '40', height: '40', paddingTop: '8', paddingX: '11px', fontSize: '2' } }}
+          sx={{
+            '& textarea': {
+              minHeight: '40',
+              height: '40',
+              paddingTop: '8',
+              paddingX: '11px',
+              fontSize: '2',
+            },
+          }}
           {...register('value', { required: 'This field is required.' })}
         />
       );

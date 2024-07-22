@@ -2,7 +2,7 @@ import { Box, Button, Dialog, DialogBody, DialogFooter, Input, Select, useDisclo
 import { UseDisclosureProps } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import useWorkflowNames from '../../hooks/useWorkflowNames';
-import { isNotEmpty, isUnique, WORKFLOW_NAME_PATTERN, WORKFLOW_NAME_REQUIRED } from '@/models/Workflow';
+import { isNotEmpty, isUnique, WORKFLOW_NAME_PATTERN, WORKFLOW_NAME_REQUIRED } from '@/core/domain/Workflow';
 import BitriseYmlProvider from '@/contexts/BitriseYmlProvider';
 import { BitriseYml } from '@/models/BitriseYml';
 

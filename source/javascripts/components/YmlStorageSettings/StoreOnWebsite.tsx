@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Box, Button, ButtonGroup, Notification, Radio, Text } from '@bitrise/bitkit';
 
-import useGetAppConfigFromRepoCallback from '../../hooks/api/useGetAppConfigFromRepoCallback';
-import usePostAppConfigCallback from '../../hooks/api/usePostAppConfigCallback';
-import useUpdatePipelineConfigCallback from '../../hooks/api/useUpdatePipelineConfigCallback';
-import { WFEWindow } from '../../typings/global';
-import appConfigAsYml from '../../utils/appConfigAsYml';
-import LookingForYmlInRepoProgress from '../common/notifications/LookingForYmlInRepoProgress';
-import CreatingYmlOnWebsiteProgress from '../common/notifications/CreatingYmlOnWebsiteProgress';
-import YmlNotFoundInRepositoryError from '../common/notifications/YmlNotFoundInRepositoryError';
+import { WFEWindow } from '../../../typings/global';
+import appConfigAsYml from '../../../utils/appConfigAsYml';
+import LookingForYmlInRepoProgress from '../../../components/common/notifications/LookingForYmlInRepoProgress';
+import CreatingYmlOnWebsiteProgress from '../../../components/common/notifications/CreatingYmlOnWebsiteProgress';
+import YmlNotFoundInRepositoryError from '../../../components/common/notifications/YmlNotFoundInRepositoryError';
+import useUpdatePipelineConfigCallback from '@/hooks/api/useUpdatePipelineConfigCallback';
+import usePostAppConfigCallback from '@/hooks/api/usePostAppConfigCallback';
+import useGetAppConfigFromRepoCallback from '@/hooks/api/useGetAppConfigFromRepoCallback';
 
 type StoreOnWebsiteProps = {
   appSlug: string;

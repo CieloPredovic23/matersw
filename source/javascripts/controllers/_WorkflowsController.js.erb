@@ -1,12 +1,12 @@
 import { safeDigest } from "@/services/react-compat";
 import datadogRumCustomTiming from "../utils/datadogCustomRumTiming.ts";
 import { getVersionRemark } from "@/utils/stepVersionUtil";
-import { castEnvVarValueForYml } from '@/models/EnvVar';
 import {
   extractInputNames,
   extractReleaseNotesUrl
 } from "@/pages/WorkflowsPage/components/StepConfigPanel/StepConfigPanel.utils";
 import semverDiff from 'semver/functions/diff'
+import { castEnvVarValueForYml } from "@/core/services/bitriseYmlService";
 
 (function () {
   "use strict";
