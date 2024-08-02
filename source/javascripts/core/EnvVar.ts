@@ -1,6 +1,6 @@
 type EnvVar = {
   key: string;
-  value: string;
+  value: unknown;
   source: string;
   isExpand: boolean;
 };
@@ -12,7 +12,7 @@ const KEY_PATTERN = {
   message: 'Key should contain letters, numbers, underscores, should not begin with a number.',
 };
 
-function toYmlValue(value: unknown): unknown {
+function parseYmlValue(value: unknown): unknown {
   if (typeof value === 'string') {
     if (['true', 'false'].includes(value)) {
       return Boolean(value === 'true');
@@ -26,10 +26,20 @@ function toYmlValue(value: unknown): unknown {
   return value;
 }
 
+export function parseEnvVarFromYml({ opts, ...env }: { [key: string]: any }, source = ''): EnvVar {
+  return {
+    source,
+    key: Object.keys(env)[0],
+    value: parseYmlValue(Object.values(env)[0]),
+    isExpand: Boolean(opts?.is_expand),
+  };
+}
+
 export { EnvVar };
 export default {
   KEY_IS_REQUIRED,
   VALUE_IS_REQUIRED,
   KEY_PATTERN,
-  toYmlValue,
+  parseYmlValue,
+  parseEnvVarFromYml,
 };

@@ -3,22 +3,16 @@ import { useShallow } from 'zustand/react/shallow';
 import maxSatisfying from 'semver/ranges/max-satisfying';
 import { useQuery } from '@tanstack/react-query';
 import merge from 'lodash/merge';
-import defaultIcon from '../../images/step/icon-default.svg';
+
 import useBitriseYmlStore from '@/hooks/useBitriseYmlStore';
-import { isGitStep, isLocalStep, isStepLib, normalizeStepVersion, parseStepCVS, Step } from '@/models/Step';
-import useAlgoliaStep from '@/hooks/useAlgoliaStep';
-import useAlgoliaStepInputs from '@/hooks/useAlgoliaStepInputs';
-import { Maintainer } from '@/models/Algolia';
+import StepService from '@/core/StepService';
+import { useAlgoliaStep, useAlgoliaStepInputs } from '@/hooks/useAlgolia';
+import { Step } from '@/core/Step';
 
 type UseStepResult = {
   cvs: string;
   step?: Step;
-  icon?: string;
-  title?: string; // TODO: should be removed because confusing (use step.title instead)
   isLoading?: boolean;
-  maintainer?: Maintainer;
-  selectedVersion?: string;
-  resolvedVersion?: string;
   availableVersions?: string[];
 };
 
@@ -42,19 +36,23 @@ const useStepFromYml = (workflowId: string, stepIndex: number): UseStepResult =>
   );
 };
 
-const useStepFromAlgolia = (cvs = ''): UseStepResult => {
-  const [id, version] = parseStepCVS(cvs);
-  const { data: info, isLoading: isLoadingInfo } = useAlgoliaStep({ id, enabled: Boolean(id && isStepLib(cvs)) });
+const useStepFromApi = (cvs = ''): UseStepResult => {
+  const [id, version] = StepService.parseStepCVS(cvs);
+  const { data: stepVersions, isLoading: isLoadingInfo } = useAlgoliaStep({
+    id,
+    filter: 'all_versions',
+    enabled: Boolean(id && isStepLib(cvs)),
+  });
 
-  const versions = info?.map((s) => s.version ?? '');
-  const latestVersion = info?.find((s) => s.is_latest)?.version;
+  const versions = stepVersions?.map((s) => s.extras?.version ?? '');
+  const latestVersion = stepVersions?.find((s) => s.extras?.isLatest)?.extras?.version;
   const selectedVersion = normalizeStepVersion(version ?? '');
   const resolvedVersion = !version ? latestVersion : maxSatisfying(versions ?? [], selectedVersion) || undefined;
-  const resolvedStepInfo = info?.find((s) => s.version === resolvedVersion);
+  const resolvedStepInfo = stepVersions?.find((s) => s.extras?.version === resolvedVersion);
 
   const { data: inputs, isLoading: isLoadingInputs } = useAlgoliaStepInputs({
-    cvs: resolvedStepInfo?.cvs ?? '',
-    enabled: Boolean(resolvedStepInfo?.cvs),
+    cvs: resolvedStepInfo?.extras?.cvs ?? cvs,
+    enabled: Boolean(resolvedStepInfo?.extras?.cvs),
   });
 
   return useMemo(() => {
@@ -62,11 +60,11 @@ const useStepFromAlgolia = (cvs = ''): UseStepResult => {
       selectedVersion,
       resolvedVersion,
       availableVersions: versions,
-      cvs: resolvedStepInfo?.cvs || cvs,
-      step: { ...resolvedStepInfo?.step, inputs },
+      cvs: resolvedStepInfo?.extras?.cvs || cvs,
+      step: { ...resolvedStepInfo, inputs },
       isLoading: isLoadingInfo || isLoadingInputs,
-      maintainer: resolvedStepInfo?.info?.maintainer,
-      icon: resolvedStepInfo?.info?.asset_urls?.['icon.svg'] || resolvedStepInfo?.info?.asset_urls?.['icon.png'],
+      icon: resolvedStepInfo?.asset_urls?.['icon.svg'] || resolvedStepInfo?.asset_urls?.['icon.png'],
+      ...resolvedStepInfo.extras,
     };
   }, [cvs, inputs, isLoadingInfo, isLoadingInputs, resolvedStepInfo, resolvedVersion, selectedVersion, versions]);
 };
@@ -89,7 +87,10 @@ const useStepFromLocalApi = (cvs = ''): UseStepResult => {
         signal,
         method: 'POST',
         body: JSON.stringify({ id, library, version }),
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
       });
 
       return (await response.json()) as {
@@ -140,7 +141,6 @@ const useStep = (workflowId: string, stepIndex: number): UseStepResult | undefin
     return {
       cvs,
       step: mergedStep,
-      title: mergedStep.title || cvs,
       maintainer: stepFromAlgolia?.maintainer,
       availableVersions: stepFromAlgolia?.availableVersions,
       isLoading: stepFromAlgolia?.isLoading || stepFromLocalApi?.isLoading,

@@ -1081,6 +1081,7 @@ def strings
                 app_setting_code_signing: "/app/<app_slug>/settings/code-signing"
 
             },
+            // TODO - We need to support these for CLI mode
             local_server: {
                 cancel_api_connection_close: "/api/connection",
                 close_api_connection: "/api/connection",

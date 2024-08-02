@@ -1,8 +1,9 @@
 import algoliasearch from 'algoliasearch';
 import uniqBy from 'lodash/uniqBy';
-import defaultIcon from '../../images/step/icon-default.svg';
-import { Maintainer, Step, StepObject } from '@/core/Step';
-import { withId } from '@/core/WithId';
+import sortBy from 'lodash/sortBy';
+import { Maintainer, Step, StepInputOptions } from '@/core/Step';
+import { YmlStepObject } from '@/core/BitriseYml.step';
+import VersionUtils from '@/utils/version.utils';
 
 const ALGOLIA_APP_ID = 'HI1538U2K4';
 const ALGOLIA_API_KEY = '708f890e859e7c44f309a1bbad3d2de8';
@@ -18,64 +19,56 @@ type AlgoliaStepResponse = Partial<{
   is_deprecated: boolean;
   is_latest: boolean;
   latest_version_number: string;
-  step: Partial<StepObject>;
+  step: Partial<YmlStepObject>;
   info: {
     maintainer?: Maintainer;
-    asset_urls?: StepObject['asset_urls'] & {
+    asset_urls?: YmlStepObject['asset_urls'] & {
       'icon.svg'?: string;
       'icon.png'?: string;
     };
   };
 }>;
 
-// type AlgoliaStepInputDTO = Partial<{
-//   readonly objectID: string;
-//   id: string;
-//   cvs: string;
-//   version: string;
-//   is_latest: boolean;
-// }>;
+type AlgoliaStepInputResponse = Partial<{
+  readonly objectID: string;
+  cvs: string;
+  order: number;
+  opts: StepInputOptions;
+  is_latest: boolean;
+  [key: string]: unknown;
+}>;
 
 // TRANSFORMATIONS
-function toStep(dto: AlgoliaStepResponse): Step | undefined {
-  if (!dto.id || !dto.cvs) {
+function toStep(response: AlgoliaStepResponse, availableVersions?: string[]): Step | undefined {
+  if (!response.id || !response.cvs) {
     return undefined;
   }
 
-  return withId([
-    dto.id,
-    {
-      id: dto.id,
-      cvs: dto.cvs,
+  return {
+    ...response.step,
+    info: {
+      id: response.id,
+      cvs: response.cvs,
       icon:
-        dto.step?.asset_urls?.['icon.svg'] ||
-        dto.step?.asset_urls?.['icon.png'] ||
-        dto.info?.asset_urls?.['icon.svg'] ||
-        dto.info?.asset_urls?.['icon.png'] ||
-        defaultIcon,
-      title: dto.step?.title || '',
-      summary: dto.step?.summary || '',
-      description: dto.step?.description || '',
-      version: dto.version || '',
-      categories: dto.step?.type_tags || [],
-      isOfficial: dto.info?.maintainer === Maintainer.Bitrise || false,
-      isVerified: dto.info?.maintainer === Maintainer.Verified || false,
-      isCommunity: dto.info?.maintainer === Maintainer.Community || false,
-      isDeprecated: dto.is_deprecated || false,
+        response.info?.asset_urls?.['icon.svg'] ||
+        response.info?.asset_urls?.['icon.png'] ||
+        response.step?.asset_urls?.['icon.svg'] ||
+        response.step?.asset_urls?.['icon.png'],
+      isOfficial: response.info?.maintainer === Maintainer.Bitrise && !response.is_deprecated,
+      isVerified: response.info?.maintainer === Maintainer.Verified && !response.is_deprecated,
+      isCommunity: response.info?.maintainer === Maintainer.Community && !response.is_deprecated,
+      isDeprecated: Boolean(response.is_deprecated),
     },
-  ]);
+    versionInfo: {
+      availableVersions,
+      version: response.version || '',
+      selectedVersion: VersionUtils.normalizeVersion(response),
+      resolvedVersion: VersionUtils.resolveVersion(response, response.latest_version_number || '', availableVersions),
+      latestVersion: response.latest_version_number,
+      isLatest: Boolean(response.is_latest),
+    },
+  };
 }
-
-// function toStepInput(dto: AlgoliaStepInputDTO): StepInput | undefined {
-//   if (!dto.id || !dto.cvs) {
-//     return undefined;
-//   }
-//
-//   return {
-//     id: dto.id,
-//     cvs: dto.cvs,
-//   };
-// }
 
 // API CALLS
 function getAlgoliaClients() {
@@ -93,30 +86,38 @@ async function getAllSteps() {
     batch: (objects) => results.push(...objects),
     filters: 'is_latest:true AND is_deprecated:false',
   });
-  return uniqBy(results, 'id').map(toStep).filter(Boolean) as Step[];
+  return uniqBy(results, 'id')
+    .map((step) => toStep(step))
+    .filter(Boolean) as Step[];
 }
 
-async function getStepById({ id, latestOnly }: { id: string; latestOnly?: boolean }) {
+async function getStep({ cvs }: { cvs: string }): Promise<Array<Step>> {
+  const [id] = cvs.split('@');
   const { stepsClient } = getAlgoliaClients();
   const results: AlgoliaStepResponse[] = [];
   await stepsClient.browseObjects<AlgoliaStepResponse>({
     batch: (batch) => results.push(...batch),
-    filters: latestOnly ? `id:${id} AND is_latest:true` : `id:${id}`,
+    filters: `id:${id}`,
   });
-  return results.map(toStep).filter(Boolean)[0];
+  const availableVersions = results.map((step) => step.version).filter(Boolean) as string[];
+  return results.map((step) => toStep(step, availableVersions)).filter(Boolean) as Step[];
 }
 
-// async function getStepInputsById({ id }: { id: string }) {
-//   const { inputsClient } = getAlgoliaClients();
-//   const results: AlgoliaStepInputDTO[] = [];
-//   await inputsClient.browseObjects<AlgoliaStepDTO>({
-//     batch: (batch) => results.push(...batch),
-//     filters: `id:${id} AND is_latest:true`,
-//   });
-//   return results.map(toStepInput).filter(Boolean) as StepInput[];
-// }
+async function getStepInputs({ cvs }: { cvs: string }): Promise<Step['inputs']> {
+  const { inputsClient } = getAlgoliaClients();
+  const results: AlgoliaStepInputResponse[] = [];
+  await inputsClient.browseObjects<AlgoliaStepInputResponse>({
+    filters: `cvs:${cvs}`,
+    batch: (batch) => results.push(...batch),
+  });
+
+  return sortBy(results, 'order').map(({ opts, cvs: _, is_latest, objectID, order, ...input }) => {
+    return { opts, ...input };
+  }) as Exclude<Step['inputs'], undefined>;
+}
 
 export default {
   getAllSteps,
-  getStepById,
+  getStep,
+  getStepInputs,
 };

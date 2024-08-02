@@ -1,5 +1,4 @@
-import { Workflow } from './Workflow';
-import { WithId } from '@/core/WithId';
+import { YmlStepObject } from '@/core/BitriseYml.step';
 
 enum Maintainer {
   Bitrise = 'bitrise',
@@ -7,36 +6,43 @@ enum Maintainer {
   Community = 'community',
 }
 
-type Steps = Required<Workflow>['steps'];
-type StepObject = Extract<Steps[number][string], { website?: string }>;
-type Step = WithId<StepObject>;
+type StepInputOptions = Partial<{
+  title: string;
+  summary: string;
+  category: string;
+  description: string;
+  value_options: string[];
+  unset: boolean;
+  is_expand: boolean;
+  is_template: boolean;
+  is_required: boolean;
+  is_sensitive: boolean;
+  skip_if_empty: boolean;
+  is_dont_change_value: boolean;
+}>;
 
-type StepInput = {
-  id: string;
-  cvs: string;
+type StepOutputOptions = StepInputOptions;
+
+type Step = YmlStepObject & {
+  info?: {
+    id: string;
+    cvs: string;
+    icon?: string;
+    isOfficial: boolean;
+    isVerified: boolean;
+    isCommunity: boolean;
+    isDeprecated: boolean;
+  };
+  versionInfo?: {
+    availableVersions?: string[];
+    version: string; // 2
+    selectedVersion?: string; // 2.x.x
+    resolvedVersion?: string; // 2.1.9
+    latestVersion?: string; // 2.1.9
+    isLatest: boolean;
+  };
+  inputs?: { [x: string]: unknown; opts?: StepInputOptions }[];
+  outputs?: { [x: string]: unknown; opts?: StepOutputOptions }[];
 };
 
-export function parseStepCVS(cvs: string) {
-  const cleaned = cvs.replace(/^(git::|path::|git@)/g, '');
-  const parts = cleaned.split('@');
-  const id = parts[0].split('/').pop();
-  const version = parts.length > 1 ? parts.pop() : '';
-
-  return [id, version] as const;
-}
-
-export function isStepLib(cvs: string) {
-  return /^(git::|path::|git@)/g.test(cvs) === false;
-}
-
-export function normalizeStepVersion(version: string) {
-  if (/^(\d+)(\.\d+)?$/g.test(version)) {
-    const match = version.split('.');
-    const major = match[0];
-    const minor = match[1] || 'x';
-    return `${major}.${minor}.x`;
-  }
-  return version;
-}
-
-export { Step, Steps, StepObject, Maintainer, StepInput };
+export { Maintainer, Step, StepInputOptions, StepOutputOptions };

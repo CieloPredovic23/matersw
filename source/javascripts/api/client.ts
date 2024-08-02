@@ -100,10 +100,15 @@ function del<T>(url: string, options?: ClientOpts) {
   return client<T>(url, { ...options, method: 'DELETE' });
 }
 
+function isLocalApiMode() {
+  return process.env.MODE === 'cli';
+}
+
 export default {
   get,
   post,
   put,
   patch,
   del,
+  isLocalApiMode,
 };

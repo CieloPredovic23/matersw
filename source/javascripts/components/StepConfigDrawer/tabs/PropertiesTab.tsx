@@ -11,14 +11,13 @@ import {
   useDisclosure,
 } from '@bitrise/bitkit';
 import { useStepDrawerContext } from '../StepConfigDrawer.context';
-import { isStepLib } from '@/models/Step';
 import { getVersionRemark } from '@/utils/stepVersionUtil';
 
 const PropertiesTab = () => {
   const { isOpen: showMore, onToggle: toggleShowMore } = useDisclosure();
-  const { cvs, step, title, availableVersions, selectedVersion } = useStepDrawerContext();
+  const { cvs, step, availableVersions } = useStepDrawerContext();
 
-  const setOfSelectableVersions = new Set<string | null>([null, selectedVersion || null]);
+  const setOfSelectableVersions = new Set<string | null>([null, step.selectedVersion || null]);
   availableVersions?.forEach((version) => {
     const [major, minor] = version.split('.');
     setOfSelectableVersions.add(`${major}.x.x`);

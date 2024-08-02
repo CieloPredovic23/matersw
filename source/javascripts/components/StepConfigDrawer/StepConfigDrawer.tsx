@@ -9,18 +9,18 @@ import {
   UseDisclosureProps,
 } from '@chakra-ui/react';
 import {
-  useDisclosure,
-  Tabs,
-  TabList,
-  Tab,
-  Box,
   Avatar,
-  Text,
+  Box,
+  Button,
   ButtonGroup,
   IconButton,
-  Button,
-  TabPanels,
+  Tab,
+  TabList,
   TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  useDisclosure,
 } from '@bitrise/bitkit';
 import StepBadge from '../StepBadge/StepBadge';
 import ConfigurationTab from './tabs/ConfigurationTab';
@@ -28,7 +28,7 @@ import PropertiesTab from './tabs/PropertiesTab';
 import OutputVariablesTab from './tabs/OutputVariablesTab';
 import StepConfigDrawerProvider, { useStepDrawerContext } from './StepConfigDrawer.context';
 import { Maintainer } from '@/models/Algolia';
-import { isUpgradeableStep } from '@/models/Step';
+import StepService from '@/core/StepService';
 
 type Props = UseDisclosureProps & {
   stepIndex: number;
@@ -38,7 +38,7 @@ type Props = UseDisclosureProps & {
 const StepConfigDrawerContent = (props: UseDisclosureProps) => {
   const { isOpen, onClose } = useDisclosure(props);
   const [selectedTab, setSelectedTab] = useState<string | undefined>('configuration');
-  const { step, icon, title, resolvedVersion, maintainer, availableVersions } = useStepDrawerContext();
+  const { step, icon, resolvedVersion, maintainer, availableVersions } = useStepDrawerContext();
 
   const stepHasOutputVariables = (step?.outputs?.length ?? 0) > 0;
 
@@ -99,7 +99,7 @@ const StepConfigDrawerContent = (props: UseDisclosureProps) => {
               </Box>
 
               <ButtonGroup>
-                {isUpgradeableStep(resolvedVersion, availableVersions) && (
+                {StepService.isUpgradeableStep(resolvedVersion, availableVersions) && (
                   <IconButton
                     size="sm"
                     iconName="ArrowUp"

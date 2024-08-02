@@ -5,7 +5,7 @@ import useMeta from './hooks/useMeta';
 import useWorkflow from './hooks/useWorkflow';
 import AddStepButton from './components/AddStepButton';
 import StepCard from '@/components/StepCard/StepCard';
-import { Step } from '@/models/Step';
+import { Step } from '@/core/Step';
 
 type WorkflowCardHeaderProps = {
   title: string;
@@ -108,7 +108,9 @@ const WorkflowCard = ({
   onClickAddStepButton,
   ...props
 }: WorkflowCardProps) => {
-  const { isOpen, onToggle } = useDisclosure({ defaultIsOpen: isExpanded || isFixed });
+  const { isOpen, onToggle } = useDisclosure({
+    defaultIsOpen: isExpanded || isFixed,
+  });
   const { title, meta: workflowMeta, steps } = useWorkflow({ id });
   const meta = useMeta({ override: workflowMeta });
 

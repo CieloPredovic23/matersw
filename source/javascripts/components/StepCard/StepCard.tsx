@@ -9,13 +9,13 @@ type StepCardProps = {
 };
 
 const StepCard = ({ workflowId, stepIndex, showSecondary = true, onClick }: StepCardProps) => {
-  const step = useStep(workflowId, stepIndex);
+  const stepInfo = useStep(workflowId, stepIndex);
 
-  if (!step) {
+  if (!stepInfo) {
     return null;
   }
 
-  const { cvs, isLoading, icon, title, selectedVersion } = step;
+  const { cvs, isLoading, icon, selectedVersion, step } = stepInfo;
 
   if (isLoading) {
     return (
@@ -38,12 +38,12 @@ const StepCard = ({ workflowId, stepIndex, showSecondary = true, onClick }: Step
         src={icon}
         variant="step"
         outline="1px solid"
-        name={title || cvs}
+        name={step || cvs}
         outlineColor="border/minimal"
       />
       <Box minW={0} textAlign="left">
         <Text textStyle="body/sm/regular" hasEllipsis>
-          {title}
+          {step.title}
         </Text>
         {showSecondary && (
           <Text textStyle="body/sm/regular" color="text/secondary" hasEllipsis>
