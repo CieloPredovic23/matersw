@@ -871,11 +871,46 @@ import semverDiff from 'semver/functions/diff'
 
       viewModel.outputVariables;
 
+        function isScriptStepSelectedWithPossibleOutputs() {
+          const isScriptStep = viewModel.selectedStep?.id === 'script';
+          if (!isScriptStep) {
+            return false;
+          }
+
+          const contentInput = getScriptContentText(viewModel.selectedStep);
+          if (!contentInput) {
+            return false;
+          }
+
+          return contentInput.includes('envman add --key');
+        }
+
+        function getScriptContentText(step) {
+          const contentInput = step?.userStepConfig?.inputs?.find((input) => input['content']);
+          return contentInput?.content || '';
+        }
+
+        function extractScriptOutputEnvVarKeys(value) {
+          const keyRegex = /envman add --key ([^\s]+)/g;
+          let match;
+          const keys = [];
+          while ((match = keyRegex.exec(value)) !== null) {
+            keys.push(match[1]);
+          }
+          return keys;
+        }
+
       function configureOutputsForStep(step) {
         viewModel.outputsOfSelectedStep = step && step.defaultStepConfig ? _.map(step.defaultStepConfig.outputs, function (anDefaultOutputConfig) {
           return new Variable(undefined, anDefaultOutputConfig);
         }) : undefined;
-        viewModel.outputVariables = viewModel.outputsOfSelectedStep ? viewModel.outputsOfSelectedStep.map(function (variable) {
+if (isScriptStepSelectedWithPossibleOutputs()) {
+            const keys = extractScriptOutputEnvVarKeys(getScriptContentText(viewModel.selectedStep));
+            const additionalOutputs = keys.map(function (key) {
+              return new Variable({[key]: ''}, Variable.defaultVariableConfig());
+            });
+            viewModel.outputsOfSelectedStep.push(...additionalOutputs);
+          }        viewModel.outputVariables = viewModel.outputsOfSelectedStep ? viewModel.outputsOfSelectedStep.map(function (variable) {
           const varKey = variable.key();
           const key = varKey ? `$${varKey}` : undefined;
           return ({
