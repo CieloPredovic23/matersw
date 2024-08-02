@@ -1,15 +1,20 @@
 import gtr from 'semver/ranges/gtr';
+import defaultStepIcon from '../../images/step/icon-default.svg';
 import YMLStepService from './BitriseYml.step';
 
-function displayName({ cvs, title, id }: { cvs: string; title?: string; id?: string }) {
-  if (YMLStepService.isStepBundle(cvs)) {
-    return `Step bundle: ${cvs.replace('bundle::', '')}`;
+function resolveIcon(obj?: { icon?: string }) {
+  return obj?.icon || defaultStepIcon;
+}
+
+function resolveName(title?: string, info: { cvs: string; id?: string } = { cvs: '' }) {
+  if (YMLStepService.isStepBundle(info?.cvs)) {
+    return `Step bundle: ${info.cvs.replace('bundle::', '')}`;
   }
-  if (YMLStepService.isWithGroup(cvs)) {
+  if (YMLStepService.isWithGroup(info.cvs)) {
     return 'With group';
   }
 
-  return title || id || cvs.split('/').pop() || cvs;
+  return title || info.id || info.cvs.split('/').pop() || info.cvs;
 }
 
 function isUpgradeableStep(resolvedVersion?: string, availableVersions?: string[]) {
@@ -21,5 +26,7 @@ function isUpgradeableStep(resolvedVersion?: string, availableVersions?: string[
 }
 
 export default {
+  resolveIcon,
+  resolveName,
   isUpgradeableStep,
 };

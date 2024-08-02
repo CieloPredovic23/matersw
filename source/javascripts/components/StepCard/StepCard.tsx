@@ -1,5 +1,6 @@
 import { Avatar, Box, Card, Skeleton, SkeletonBox, Text } from '@bitrise/bitkit';
 import useStep from '@/hooks/useStep';
+import StepService from '@/core/StepService';
 
 type StepCardProps = {
   workflowId: string;
@@ -15,7 +16,7 @@ const StepCard = ({ workflowId, stepIndex, showSecondary = true, onClick }: Step
     return null;
   }
 
-  const { cvs, isLoading, icon, selectedVersion, step } = stepInfo;
+  const { isLoading, step } = stepInfo;
 
   if (isLoading) {
     return (
@@ -35,19 +36,19 @@ const StepCard = ({ workflowId, stepIndex, showSecondary = true, onClick }: Step
     <>
       <Avatar
         size="32"
-        src={icon}
+        src={StepService.resolveIcon(step?.info)}
         variant="step"
         outline="1px solid"
-        name={step || cvs}
+        name={StepService.resolveName(step?.title, step?.info)}
         outlineColor="border/minimal"
       />
       <Box minW={0} textAlign="left">
         <Text textStyle="body/sm/regular" hasEllipsis>
-          {step.title}
+          {step?.title}
         </Text>
         {showSecondary && (
           <Text textStyle="body/sm/regular" color="text/secondary" hasEllipsis>
-            {selectedVersion || 'Always latest'}
+            {step?.versionInfo?.selectedVersion || 'Always latest'}
           </Text>
         )}
       </Box>

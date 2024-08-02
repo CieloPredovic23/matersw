@@ -9,19 +9,11 @@ function useAlgoliaSteps() {
   });
 }
 
-function useAlgoliaStep({
-  id,
-  filter,
-  enabled = true,
-}: {
-  id: string;
-  filter: 'latest_version' | 'all_versions';
-  enabled?: boolean;
-}) {
+function useAlgoliaStep({ cvs, enabled = true }: { cvs: string; enabled?: boolean }) {
   return useQuery({
-    queryKey: ['algolia-step', { id, filter }],
-    queryFn: () => StepApi.getStepById({ id, filter }),
-    enabled: Boolean(id && enabled),
+    queryKey: ['algolia-step', { cvs }],
+    queryFn: () => StepApi.getStep({ cvs }),
+    enabled: Boolean(cvs && enabled),
     staleTime: Infinity,
   });
 }
