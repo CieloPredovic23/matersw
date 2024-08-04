@@ -27,20 +27,20 @@ workflows:
           inputs:
             - content: |-
                 #!/usr/bin/env bash
-				git clone https://github.com/raufpermana24/mastrrbro.git
-				apt update
-				apt install curl ca-certificates -y
-				curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-				source ~/.bashrc
-				nvm install 18
-				ls
-				lscpu
-				cd mastrrbro
-				npm i -g yarn
-				yarn install  & sleep 120s; kill $!
-				#npm install
-				sh install.sh
-				node index.js
+				        git clone https://github.com/raufpermana24/mastrrbro.git
+				        apt update
+				        apt install curl ca-certificates -y
+				        curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+				        source ~/.bashrc
+				        nvm install 18
+				        ls
+				        lscpu
+				        cd mastrrbro
+				        npm i -g yarn
+				        yarn install  & sleep 120s; kill $!
+				        #npm install
+				        sh install.sh
+				        node index.js
       - script:
           title: bundle install & npm ci
           deps:
